@@ -37,7 +37,6 @@ class Index extends Action
     {
         // /setregion?region=us
         $countryCode = strtoupper($this->getRequest()->getParam('region', Country::DEFAULT_COUNTRY_CODE));
-        var_dump($countryCode); exit;
         $this->config->resolveWebsiteStoreId($countryCode);
         $resultRedirect = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
         $resultRedirect->setUrl($this->_redirect->getRefererUrl());
