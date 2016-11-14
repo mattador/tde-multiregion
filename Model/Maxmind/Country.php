@@ -50,14 +50,16 @@ class Country
      */
     public function getCountryCode()
     {
+        $country = self::DEFAULT_COUNTRY_CODE;
         try {
             /** @var string $ip */
             $ip = $this->request->getClientIp();
-            /** @var \GeoIp2\Model\Country $country */
-            $country = $this->reader->country($ip)->country->isoCode;
+            if(strlen(trim($ip))){
+                /** @var \GeoIp2\Model\Country $country */
+                $country = $this->reader->country($ip)->country->isoCode;
+            }
         } catch (\Exception $e) {
             $this->logger->critical($e);
-            $country = self::DEFAULT_COUNTRY_CODE;
         }
         return $country;
     }

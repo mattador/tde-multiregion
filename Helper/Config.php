@@ -64,20 +64,30 @@ class Config
      */
     public $staticWebsiteMap = [
         'AU' => 1,
-        'NZ' => 2,
-        'US' => 3
+        'US' => 2,
+        'NZ' => 3
     ];
+
+    /**
+     * @return bool
+     */
+    public function isEnabled(){
+        $active = (bool)(int)$this->config->getValue(self::PATH_STATUS_IS_ACTIVE);
+        if (!$active) {
+            return false;
+        }
+        return true;
+    }
 
     /**
      * @return bool
      */
     public function useMultiRegion()
     {
-        $active = (bool)(int)$this->config->getValue(self::PATH_STATUS_IS_ACTIVE);
-        if (!$active) {
+        if(!$this->isEnabled()){
             return false;
         }
-        //@todo - I ran out of time working out a better way to handle knowing if user is currently in admin area, since at this point the area code is not set.
+        //At this point in the bootstrap excecution sequence the area code is not yet set.
         if (@isset($_COOKIE['admin'])) {
             return false;
         }
@@ -91,9 +101,7 @@ class Config
     }
 
     /**
-     * Static mapping of country codes to relevant store Id's
-     *
-     * @todo - Leverage native magento cookie mangement (I ran into issues, so I'ved used native PHP controls for now...)
+     * As mentioned in README.md, I decided to use native PHP cookie management over Magento 2's abstraction for simplicity
      *
      * @return int
      */
@@ -113,9 +121,13 @@ class Config
             $countryCode = $this->maxMindCountry->getCountryCode();
         }
         //set cookie for speeding up next request from user
-        //if (!isset($_COOKIE[Config::MULTI_REGION_COOKIE])) {
-        \setcookie(Config::MULTI_REGION_COOKIE, $countryCode, time() + (3600 * 12), '/');
-        //}
+        if (isset($_COOKIE[Config::MULTI_REGION_COOKIE]) && $_COOKIE[Config::MULTI_REGION_COOKIE] != $countryCode) {
+            setcookie(Config::MULTI_REGION_COOKIE, '', time() - 3600);
+            unset($_COOKIE[Config::MULTI_REGION_COOKIE]);
+        }
+        if (!isset($_COOKIE[Config::MULTI_REGION_COOKIE])) {
+            setcookie(Config::MULTI_REGION_COOKIE, $countryCode, time() + (3600 * 12), '/');
+        }
         return $this->staticWebsiteMap[$countryCode];
     }
 

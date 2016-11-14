@@ -1,11 +1,13 @@
 <?php
 namespace Tde\MultiRegion\Controller\Index;
 
+use Magento\Catalog\Model\Product\WebsiteFactory;
+use Magento\ConfigurableProduct\Model\ResourceModel\Product\Type\ConfigurableFactory;
 use Magento\Framework\App\Action\Action;
 use Magento\Framework\App\Action\Context as ActionContext;
+use Magento\Framework\Controller\ResultFactory;
 use Tde\MultiRegion\Helper\Config;
 use Tde\MultiRegion\Model\Maxmind\Country;
-use Magento\Framework\Controller\ResultFactory;
 
 class Index extends Action
 {
@@ -35,9 +37,8 @@ class Index extends Action
      */
     public function execute()
     {
-        // /setregion?region=us
         $countryCode = strtoupper($this->getRequest()->getParam('region', Country::DEFAULT_COUNTRY_CODE));
-        $this->config->resolveWebsiteStoreId($countryCode);
+        //echo $this->config->resolveWebsiteStoreId($countryCode); exit;
         $resultRedirect = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
         $resultRedirect->setUrl($this->_redirect->getRefererUrl());
         return $resultRedirect;
