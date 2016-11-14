@@ -47,7 +47,7 @@ class ConfigurableProductPriceResolver extends ConfigurablePriceResolver
 
     /**
      * Instead of looking for the lowest price of all simples attached to config, as Magento does normally,
-     * I attempt to make an exact match and extract the mostx appropriate simple price.
+     * I attempt to make an exact match and extract the most appropriate simple price.
      *
      * @see README.md for more context
      *
@@ -73,7 +73,7 @@ class ConfigurableProductPriceResolver extends ConfigurablePriceResolver
                     $price = $productPrice;
                     break;
                 }
-            } elseif ($attributeSetId == 12) { /*Monogrammable*/
+            } elseif ($attributeSetId == 12) { /*Alphabet*/
                 $letter = substr($product->getSku(), strlen($product->getSku()) - 1);
                 if ($letter == substr($subProduct->getSku(), 0, 1)) {
                     $price = $productPrice;
